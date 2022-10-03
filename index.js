@@ -1,6 +1,6 @@
 let totalStars = [];
-// let fixedStars = [];
-let speed = 5;
+let fixedStars = [];
+let speed = 3;
 let canvas;
 let ctx;
 let center = {
@@ -34,15 +34,15 @@ function canvasHW() {
         stars(ctx, loc);
     }
 
-    // for (let i = 0; i < 25; i++) {
-    //     let fixedLoc = {
-    //         r: (Math.random() * 2) + 1,
-    //         x: Math.random() * canvas.width,
-    //         y: Math.random() * canvas.height
-    //     }
-    //     fixedStars.push(fixedLoc);
-    //     stars(ctx, fixedLoc);
-    // }
+    for (let i = 0; i < 50; i++) {
+        let fixedLoc = {
+            r: (Math.random() * 2) + 1,
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height
+        }
+        fixedStars.push(fixedLoc);
+        stars(ctx, fixedLoc);
+    }
     animate();
 }
 
@@ -51,6 +51,11 @@ function stars(ctx, location) {
     ctx.beginPath();
 
     ctx.moveTo(location.x, location.y);
+
+    pastLoc = {
+        pX: (9*location.x + center.x)/10,
+        pY: (9*location.y + center.y)/10 
+    }
     ctx.lineTo(pastLoc.pX, pastLoc.pY);
     // console.log(loc.x, pastLoc.pX);
 
@@ -70,10 +75,7 @@ function updateStars(location) {
         location.x - center.x
     );
 
-    pastLoc = {
-        pX: location.x,
-        pY: location.y
-    }
+   
 
 
     location.x += speed * Math.cos(angle);
@@ -103,9 +105,13 @@ function updateStars(location) {
 
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // for (let i = 0; i < 25; i++) {
-    //     stars(ctx, fixedStars[i]);
-    // }
+    for (let i = 0; i < 50; i++) {
+        // stars(ctx, fixedStars[i]);
+        ctx.beginPath();
+        ctx.arc(fixedStars[i].x, fixedStars[i].y, fixedStars[i].r, 0, 2*Math.PI);
+        ctx.fillStyle = "white";
+        ctx.fill();
+    }
     for (let i = 0; i < 100; i++) {
         console.log(i);
         updateStars(totalStars[i]);
