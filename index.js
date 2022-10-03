@@ -1,8 +1,9 @@
 let totalStars = [];
 let fixedStars = [];
-let speed = 3;
-let maxSpeed = 10;
-let minSpeed = 1;
+let speed = 5;
+const speedChangeRate = 0.3;
+const maxSpeed = 10;
+const minSpeed = 1;
 let canvas;
 let ctx;
 let center = {
@@ -12,6 +13,7 @@ let center = {
 let pastLoc;
 
 let isKeyPressed = false;
+
 
 function canvasHW() {
     canvas = document.getElementById("myCanvas");
@@ -80,9 +82,11 @@ function stars(ctx, location) {
 
     ctx.moveTo(location.x, location.y);
 
+    let weight = 50 - 45*(speed/maxSpeed);
+
     pastLoc = {
-        pX: (9 * location.x + center.x) / 10,
-        pY: (9 * location.y + center.y) / 10
+        pX: (weight * location.x + center.x) / (weight+1),
+        pY: (weight * location.y + center.y) / (weight+1)
     }
     ctx.lineTo(pastLoc.pX, pastLoc.pY);
     ctx.strokeStyle = "white";
@@ -129,9 +133,9 @@ function updateStars(location) {
 function animate() {
 
     if (isKeyPressed) {
-        speed++;
+        speed += speedChangeRate;
     } else {
-        speed--;
+        speed -= speedChangeRate;
     }
 
     speed = Math.min(speed, maxSpeed);
@@ -150,7 +154,6 @@ function animate() {
         updateStars(totalStars[i]);
         stars(ctx, totalStars[i]);
     }
-
     window.requestAnimationFrame(animate);
 }
 
