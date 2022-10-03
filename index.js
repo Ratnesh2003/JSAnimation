@@ -1,6 +1,8 @@
 let totalStars = [];
 let fixedStars = [];
 let speed = 3;
+let maxSpeed = 10;
+let minSpeed = 1;
 let canvas;
 let ctx;
 let center = {
@@ -9,6 +11,8 @@ let center = {
 }
 let pastLoc;
 
+let isKeyPressed = false;
+
 function canvasHW() {
     canvas = document.getElementById("myCanvas");
     canvas.width = window.innerWidth;
@@ -16,7 +20,8 @@ function canvasHW() {
 
     ctx = canvas.getContext("2d");
 
-    
+    window.addEventListener("keydown", onKeyPressed);
+    window.addEventListener("keyup", onKeyReleased);
 
 
     for (let i = 0; i < 100; i++) {
@@ -46,36 +51,54 @@ function canvasHW() {
     animate();
 }
 
+
+function onKeyPressed(e) {
+    if (e.keyCode === 87) {
+        isKeyPressed = true;
+    }
+}
+
+function onKeyReleased() {
+
+        isKeyPressed = false;
+
+}
+
+
+function onArrowClicked(e) {
+    console.log("Clicked");
+    if (e.keyCode === 38) {
+        console.log("JSDKLKLDFJ");
+        isKeyDown = true;
+    }
+}
+
+
 function stars(ctx, location) {
-    console.log("hello");
+    // console.log("hello");
     ctx.beginPath();
 
     ctx.moveTo(location.x, location.y);
 
     pastLoc = {
-        pX: (9*location.x + center.x)/10,
-        pY: (9*location.y + center.y)/10 
+        pX: (9 * location.x + center.x) / 10,
+        pY: (9 * location.y + center.y) / 10
     }
     ctx.lineTo(pastLoc.pX, pastLoc.pY);
-    // console.log(loc.x, pastLoc.pX);
-
     ctx.strokeStyle = "white";
     ctx.lineWidth = location.r;
     ctx.stroke();
 
-    // ctx.arc(loc.x, loc.y, loc.r, 0, 2 * Math.PI);
-    // ctx.fillStyle = "white";
-    // ctx.fill();
 }
 
 function updateStars(location) {
-    
+
     let angle = Math.atan2(
         location.y - center.y,
         location.x - center.x
     );
 
-   
+
 
 
     location.x += speed * Math.cos(angle);
@@ -100,20 +123,30 @@ function updateStars(location) {
         Math.pow(location.y - center.y, 2)
     )
 
-    location.r = 1+3*distanceFromCenter/window.innerWidth;
+    location.r = 1 + 3 * distanceFromCenter / window.innerWidth;
 }
 
 function animate() {
+
+    if (isKeyPressed) {
+        speed++;
+    } else {
+        speed--;
+    }
+
+    speed = Math.min(speed, maxSpeed);
+    speed = Math.max(minSpeed, speed);
+
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < 50; i++) {
-        // stars(ctx, fixedStars[i]);
         ctx.beginPath();
-        ctx.arc(fixedStars[i].x, fixedStars[i].y, fixedStars[i].r, 0, 2*Math.PI);
+        ctx.arc(fixedStars[i].x, fixedStars[i].y, fixedStars[i].r, 0, 2 * Math.PI);
         ctx.fillStyle = "white";
         ctx.fill();
     }
     for (let i = 0; i < 100; i++) {
-        console.log(i);
+        // console.log(i);
         updateStars(totalStars[i]);
         stars(ctx, totalStars[i]);
     }
