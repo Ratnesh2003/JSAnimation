@@ -1,9 +1,19 @@
 let totalStars = [];
 let fixedStars = [];
-let speed = 5;
-const speedChangeRate = 0.3;
+let asteroids = [];
+let sizeX = 20;
+let sizeY = 20;
+
+let speed = 3;
 const maxSpeed = 10;
 const minSpeed = 1;
+
+let asteroidSpeed = 3;
+let maxAsteroidSpeed = 12;
+let minAsteroidSPeed = 2;
+
+const speedChangeRate = 0.3;
+
 let canvas;
 let ctx;
 let center = {
@@ -14,6 +24,8 @@ let pastLoc;
 
 let isKeyPressed = false;
 
+let asteroidImage = new Image();
+asteroidImage.src = "images/asteroids/ast1.png";
 
 function canvasHW() {
     canvas = document.getElementById("myCanvas");
@@ -39,6 +51,17 @@ function canvasHW() {
         }
         totalStars.push(loc);
         stars(ctx, loc);
+    }
+
+    // Adding asteroids positions in array.
+    for (let i=0; i < 10; i++) {
+        let loc = {
+            sizeX: 20 + Math.random()*20,
+            sizeY: 20 + Math.random()*20,
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height
+        }
+        asteroids.push(loc);
     }
 
     for (let i = 0; i < 50; i++) {
@@ -67,14 +90,6 @@ function onKeyReleased() {
 }
 
 
-function onArrowClicked(e) {
-    console.log("Clicked");
-    if (e.keyCode === 38) {
-        console.log("JSDKLKLDFJ");
-        isKeyDown = true;
-    }
-}
-
 
 function stars(ctx, location) {
     // console.log("hello");
@@ -101,14 +116,8 @@ function updateStars(location) {
         location.y - center.y,
         location.x - center.x
     );
-
-
-
-
     location.x += speed * Math.cos(angle);
     location.y += speed * Math.sin(angle);
-
-    // console.log(pastLoc.pX, location.x);
 
     if (location.x > window.innerWidth ||
         location.x < 0 || location.y < 0 ||
@@ -121,12 +130,39 @@ function updateStars(location) {
             pY: location.Y
         }
     }
-
     let distanceFromCenter = Math.sqrt(
         Math.pow(location.x - center.x, 2) +
         Math.pow(location.y - center.y, 2)
     )
+    location.r = 1 + 3 * distanceFromCenter / window.innerWidth;
+}
 
+function updateAsteroids(location) {
+
+    let angle = Math.atan2(
+        location.y - center.y,
+        location.x - center.x
+    );
+    location.x += asteroidSpeed * Math.cos(angle);
+    location.y += asteroidSpeed * Math.sin(angle);
+
+    if (location.x > window.innerWidth + 100||
+        location.x < -150 || location.y < -150 ||
+        location.y > window.innerHeight + 100) {
+        location.x = Math.random() * window.innerWidth;
+        location.y = Math.random() * window.innerHeight;
+
+        pastLoc = {
+            pX: location.x,
+            pY: location.Y
+        }
+        location.sizeX = 0.1;
+        location.sizeY = 0.1;
+    }
+    let distanceFromCenter = Math.sqrt(
+        Math.pow(location.x - center.x, 2) +
+        Math.pow(location.y - center.y, 2)
+    )
     location.r = 1 + 3 * distanceFromCenter / window.innerWidth;
 }
 
@@ -134,13 +170,17 @@ function animate() {
 
     if (isKeyPressed) {
         speed += speedChangeRate;
+        asteroidSpeed += speedChangeRate;
     } else {
         speed -= speedChangeRate;
+        asteroidSpeed -= speedChangeRate;
     }
 
     speed = Math.min(speed, maxSpeed);
     speed = Math.max(minSpeed, speed);
 
+    asteroidSpeed = Math.min(asteroidSpeed, maxAsteroidSpeed);
+    asteroidSpeed = Math.max(minAsteroidSPeed, asteroidSpeed);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < 50; i++) {
@@ -154,6 +194,15 @@ function animate() {
         updateStars(totalStars[i]);
         stars(ctx, totalStars[i]);
     }
+
+    for (let i = 0; i<10; i++) {
+        updateAsteroids(asteroids[i]);
+        ctx.drawImage(asteroidImage, asteroids[i].x, asteroids[i].y, asteroids[i].sizeX, asteroids[i].sizeY);
+        asteroids[i].sizeX += 0.5;
+        asteroids[i].sizeY += 0.5;
+
+    }
+
     window.requestAnimationFrame(animate);
 }
 
