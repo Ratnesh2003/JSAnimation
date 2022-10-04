@@ -65,12 +65,15 @@ function canvasHW() {
             sizeX: 20 + Math.random() * 20,
             sizeY: 20 + Math.random() * 20,
             x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height
+            y: Math.random() * canvas.height,
+            rotDir: Math.random() > 0.5 ? 1 : -1,
+            rotSpeed: 0.1 + Math.random()*0.5
         }
         asteroids.push(loc);
     }
 
-    for (let i = 0; i < 50; i++) {
+    // 4809535593
+    for (let i = 0; i < 50; i++) { 
         let fixedLoc = {
             r: (Math.random() * 2) + 1,
             x: Math.random() * canvas.width,
@@ -172,9 +175,15 @@ function updateAsteroids(location) {
     location.r = 1 + 3 * distanceFromCenter / window.innerWidth;
 }
 
+let rotationValue = 10;
 function animateAsteroids(j, asteroidImageNum, size) {
     updateAsteroids(asteroids[j]);
-    ctx.drawImage(asteroidImageNum, asteroids[j].x, asteroids[j].y, asteroids[j].sizeX, asteroids[j].sizeY);
+    ctx.save();
+    ctx.translate(asteroids[j].x, asteroids[j].y);
+    ctx.rotate(asteroids[j].rotDir * asteroids[j].rotSpeed * Math.PI/360);
+    asteroids[j].rotSpeed += 0.5;
+    ctx.drawImage(asteroidImageNum, 0 - asteroids[j].sizeX/2, 0 - asteroids[j].sizeY/2, asteroids[j].sizeX, asteroids[j].sizeY);
+    ctx.restore();
     asteroids[j].sizeX += size;
     asteroids[j].sizeY += size;
     // Add asteroids size increase condition on pressing w
