@@ -72,7 +72,6 @@ function canvasHW() {
         asteroids.push(loc);
     }
 
-    // 4809535593
     for (let i = 0; i < 50; i++) { 
         let fixedLoc = {
             r: (Math.random() * 2) + 1,
@@ -186,17 +185,22 @@ function animateAsteroids(j, asteroidImageNum, size) {
     ctx.restore();
     asteroids[j].sizeX += size;
     asteroids[j].sizeY += size;
-    // Add asteroids size increase condition on pressing w
-}
+    }
 
 function animate() {
 
     if (isKeyPressed) {
         speed += speedChangeRate;
         asteroidSpeed += speedChangeRate;
+        var sizeInc1 = 2.1;
+        var sizeInc2 = 1.9;
+        var sizeInc3 = 1.7;
     } else {
         speed -= speedChangeRate;
         asteroidSpeed -= speedChangeRate;
+        var sizeInc1 = 0.6;
+        var sizeInc2 = 0.5;
+        var sizeInc3 = 0.4;
     }
 
     speed = Math.min(speed, maxSpeed);
@@ -220,11 +224,11 @@ function animate() {
 
     for (let i=0; i < 10; i++) {
         if (i < 3)
-            animateAsteroids(i, asteroidImage1, 0.6);
+            animateAsteroids(i, asteroidImage1, sizeInc1);
         else if (i < 6)
-            animateAsteroids(i, asteroidImage2, 0.5);
+            animateAsteroids(i, asteroidImage2, sizeInc2);
         else 
-            animateAsteroids(i, asteroidImage3, 0.4);        
+            animateAsteroids(i, asteroidImage3, sizeInc3);        
     }
 
     window.requestAnimationFrame(animate);
