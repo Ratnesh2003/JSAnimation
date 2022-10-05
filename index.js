@@ -33,6 +33,7 @@ asteroidImage2.src = "images/asteroids/ast2.png";
 let asteroidImage3 = new Image();
 asteroidImage3.src = "images/asteroids/ast3.png";
 
+
 function canvasHW() {
     canvas = document.getElementById("myCanvas");
     canvas.width = window.innerWidth;
@@ -72,6 +73,8 @@ function canvasHW() {
         asteroids.push(loc);
     }
 
+    
+    // fixed stars
     for (let i = 0; i < 50; i++) { 
         let fixedLoc = {
             r: (Math.random() * 2) + 1,
@@ -92,9 +95,7 @@ function onKeyPressed(e) {
 }
 
 function onKeyReleased() {
-
     isKeyPressed = false;
-
 }
 
 
@@ -174,6 +175,7 @@ function updateAsteroids(location) {
     location.r = 1 + 3 * distanceFromCenter / window.innerWidth;
 }
 
+
 let rotationValue = 10;
 function animateAsteroids(j, asteroidImageNum, size) {
     updateAsteroids(asteroids[j]);
@@ -185,9 +187,34 @@ function animateAsteroids(j, asteroidImageNum, size) {
     ctx.restore();
     asteroids[j].sizeX += size;
     asteroids[j].sizeY += size;
+}
+
+let rgbstep = 100;
+function textfadeup() {
+    rgbstep++;
+    ctx.fillStyle = `rgb(${rgbstep}, ${rgbstep}, ${rgbstep})`;
+    ctx.font = "40px Arial";
+    ctx.fillText("Press W to increase speed", canvas.width/3, 50);
+    if (rgbstep < 200)
+        setTimeout(textfadeup, 10);
+    if (rgbstep == 200) {
+        textfadedown();
     }
+}
+function textfadedown() {
+    rgbstep--;
+    ctx.fillStyle = `rgb(${rgbstep}, ${rgbstep}, ${rgbstep})`;
+    ctx.font = "40px Arial";
+    ctx.fillText("Press W to increase speed", canvas.width/3, 50);
+    if (rgbstep > 80)
+        setTimeout(textfadedown, 10);
+    if (rgbstep == 80) {
+        textfadeup();
+    }
+}  
 
 function animate() {
+    
 
     if (isKeyPressed) {
         speed += speedChangeRate;
@@ -210,6 +237,9 @@ function animate() {
     asteroidSpeed = Math.max(minAsteroidSPeed, asteroidSpeed);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    textfadeup();
+    
     for (let i = 0; i < 50; i++) {
         ctx.beginPath();
         ctx.arc(fixedStars[i].x, fixedStars[i].y, fixedStars[i].r, 0, 2 * Math.PI);
@@ -222,6 +252,7 @@ function animate() {
         stars(ctx, totalStars[i]);
     }
 
+    // Loop for asteroids moving
     for (let i=0; i < 10; i++) {
         if (i < 3)
             animateAsteroids(i, asteroidImage1, sizeInc1);
@@ -230,6 +261,8 @@ function animate() {
         else 
             animateAsteroids(i, asteroidImage3, sizeInc3);        
     }
+
+    
 
     window.requestAnimationFrame(animate);
 }
