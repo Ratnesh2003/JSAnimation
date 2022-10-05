@@ -4,6 +4,7 @@ let asteroids = [];
 let sizeX = 20;
 let sizeY = 20;
 
+
 let speed = 3;
 const maxSpeed = 10;
 const minSpeed = 1;
@@ -243,7 +244,13 @@ function animate() {
     for (let i = 0; i < 50; i++) {
         ctx.beginPath();
         ctx.arc(fixedStars[i].x, fixedStars[i].y, fixedStars[i].r, 0, 2 * Math.PI);
-        ctx.fillStyle = "white";
+        if(i % 10 == 0) {
+            ctx.fillStyle = "#FFCD3C";
+        } else if(i % 12 == 0){
+            ctx.fillStyle = "#db1a1a";
+        } else {
+            ctx.fillStyle = "white";
+        }
         ctx.fill();
     }
     for (let i = 0; i < 100; i++) {
